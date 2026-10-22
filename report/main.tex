@@ -1,0 +1,148 @@
+%% =============================================================================
+%% main.tex -- Phase 1 project report in IEEE conference format.
+%%
+%% Derived from the official IEEE conference LaTeX template
+%% (IEEE-conference-template-062824, "Template version as of 6/27/2024"),
+%% linked from https://www.ieee.org/conferences/publishing/templates.html.
+%%
+%% Build (from inside report/):  ./sync_figures.sh && tectonic main.tex
+%%
+%% This file holds only the document structure (preamble, title, authors and
+%% the order of sections). All prose lives in sections/*.tex, one file per
+%% section, so that team members can edit different sections in parallel.
+%% Every number in the text is read from the files in ../results/.
+%% =============================================================================
+
+% ---- Font encoding (must come before \documentclass) ------------------------
+% IEEE papers are set in Times, which IEEEtran selects as the 8-bit font family
+% "ptm". tectonic compiles with XeTeX, whose default Unicode encoding (TU) has
+% no "ptm" font, so without this line the PDF silently falls back to Latin
+% Modern. It is loaded before the class (\RequirePackage is the form of
+% \usepackage allowed there) because IEEEtran measures its font while loading.
+% With T1, tectonic (XeTeX) and Overleaf (pdfLaTeX) use the same Times fonts.
+% Consequence: keep the .tex sources ASCII-only (write --, ``...'', $-110$).
+\RequirePackage[T1]{fontenc}
+
+\documentclass[conference]{IEEEtran}
+% Conference mode disables \thanks; this re-enables it. The template uses the
+% first-page footnote for funding; we use it for the course information.
+\IEEEoverridecommandlockouts
+
+% ---- Packages of the official template --------------------------------------
+\usepackage{cite}                     % sorted, compressed citations: [1]--[3]
+\usepackage{amsmath,amssymb,amsfonts} % display equations and math symbols
+% The template also loads algorithmic.sty; the paper has no pseudocode, so it
+% is not loaded (it would only add a harmless XeTeX encoding warning).
+\usepackage{graphicx}                 % \includegraphics for the PDF figures
+\usepackage{textcomp}                 % extra text symbols (kept from template)
+\usepackage{xcolor}                   % color support (kept from template)
+
+% ---- Packages added for this report -----------------------------------------
+\usepackage{booktabs}                 % \toprule, \midrule, \bottomrule
+\usepackage{url}                      % line-breakable \url{...}
+
+% sync_figures.sh copies the figures from ../results/figures/ into figures/,
+% so a figure is included by its file name, e.g. {feature_check.pdf}.
+\graphicspath{{figures/}}
+
+% Title and keywords are defined once and reused for the printed paper and for
+% the PDF metadata below, so the two can never disagree.
+\newcommand{\papertitle}{Indoor Positioning from Wi-Fi Fingerprints with
+  Classical Machine Learning on UJIIndoorLoc (Phase~1)}
+\newcommand{\paperkeywords}{Indoor positioning, Wi-Fi fingerprinting,
+  UJIIndoorLoc, random forest, XGBoost, grouped cross-validation}
+
+% hyperref must be loaded last because it redefines commands of other packages.
+% hidelinks keeps references and citations clickable without colored boxes.
+\usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle    = {\papertitle},
+  pdfauthor   = {Gauri Mehrotra, Ansh, Agnik Misra, Kartikey Gupta, Lokendra Singh},
+  pdfsubject  = {Phase 1 report, Project 9: Indoor Location Prediction Using Wi-Fi Signals},
+  pdfkeywords = {\paperkeywords},
+}
+
+% All five authors share one affiliation. It follows the template's author
+% block (department / organization / city, country) and is defined once so
+% that the five copies cannot drift apart.
+\newcommand{\nstaffiliation}{%
+  \textit{Newton School of Technology}\\
+  \textit{Rishihood University}\\
+  Sonipat, Haryana, India}
+
+\begin{document}
+% IEEEtran sets \flushbottom in two-column mode, which stretches the space
+% between paragraphs when a float leaves a column a fraction of a line short.
+% \raggedbottom lets a column end at its last full line instead.
+\raggedbottom
+
+\title{\papertitle%
+  \thanks{Phase~1 report for Project~9, ``Indoor Location Prediction Using
+  Wi-Fi Signals'', Team T084, Section~D. Code, data and results:
+  {\urlstyle{tt}\url{https://github.com/Jitmisra/T084-wifi-indoor-positioning}}.}%
+}
+
+% Author order is the citation order (left to right, then the next row).
+\author{%
+  \IEEEauthorblockN{Gauri Mehrotra}
+  \IEEEauthorblockA{\nstaffiliation\\
+    Enrollment No.~2401010170\\
+    gauri.mehrotra2024@nst.rishihood.edu.in}
+  \and
+  \IEEEauthorblockN{Ansh}
+  \IEEEauthorblockA{\nstaffiliation\\
+    Enrollment No.~2401010077\\
+    ansh.2024@nst.rishihood.edu.in}
+  \and
+  \IEEEauthorblockN{Agnik Misra}
+  \IEEEauthorblockA{\nstaffiliation\\
+    Enrollment No.~2401010044\\
+    agnik.misra2024@nst.rishihood.edu.in}
+  % \and[<material>] puts <material> between two author blocks (default:
+  % \hfill). Ending the paragraph here starts a second, centered row, which
+  % gives a balanced 3 + 2 layout instead of an uneven automatic wrap.
+  \and[\hfill\mbox{}\par\mbox{}\hfill]
+  \IEEEauthorblockN{Kartikey Gupta}
+  \IEEEauthorblockA{\nstaffiliation\\
+    Enrollment No.~2401010214\\
+    kartikey.2024@nst.rishihood.edu.in}
+  \and
+  \IEEEauthorblockN{Lokendra Singh}
+  \IEEEauthorblockA{\nstaffiliation\\
+    Enrollment No.~2401010254\\
+    lokendra.singh2024@nst.rishihood.edu.in}
+}
+
+\maketitle
+
+% IEEE rule: no citations, footnotes, math or special symbols in the abstract.
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\begin{IEEEkeywords}
+\paperkeywords.
+\end{IEEEkeywords}
+
+% ---- Main text (numbered sections I, II, ...) -------------------------------
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/dataset_eda}
+\input{sections/methodology}
+\input{sections/results}
+\input{sections/conclusion}
+
+% ---- Back matter ------------------------------------------------------------
+% Unnumbered, course-specific section placed before the references.
+\input{sections/team_contributions}
+
+% IEEE reference style. IEEEtran.bst ships with every TeX distribution and with
+% Overleaf; references.bib holds only the works cited in the text.
+% \IEEEtriggeratref{n} starts a new column at reference n, which balances the
+% two columns of the last page (IEEEtran HOWTO). 11 fits the current layout;
+% re-check the last page after any edit.
+\IEEEtriggeratref{11}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}

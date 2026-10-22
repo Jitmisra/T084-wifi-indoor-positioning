@@ -1,0 +1,13 @@
+model,case,n_scans,share_of_scans,mean_2d,share_of_error
+baseline_rf,building wrong,2,0.0018,69.1471,0.0099
+baseline_rf,"building right, floor wrong",97,0.0873,24.9799,0.1742
+baseline_rf,both right,1012,0.9109,11.2125,0.8158
+knn,building wrong,2,0.0018,186.2445,0.0364
+knn,"building right, floor wrong",137,0.1233,18.2858,0.2445
+knn,both right,972,0.8749,7.5793,0.7191
+rf,building wrong,0,0.0,,0.0
+rf,"building right, floor wrong",87,0.0783,13.0604,0.1379
+rf,both right,1024,0.9217,6.9391,0.8621
+xgb,building wrong,0,0.0,,0.0
+xgb,"building right, floor wrong",53,0.0477,14.7791,0.0897
+xgb,both right,1058,0.9523,7.5169,0.9103

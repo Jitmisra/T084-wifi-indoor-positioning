@@ -1,0 +1,5 @@
+step,scans_removed,scans_left
+raw training file,0,19937
+no WAP heard,76,19861
+exact duplicate,634,19227
+reading of -30 dBm or stronger,508,18719

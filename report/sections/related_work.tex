@@ -1,0 +1,49 @@
+% Section II: Related Work -- fingerprinting with nearest neighbors, the
+% dataset, tree models, neural networks on UJIIndoorLoc, leakage and grouped
+% CV, and the gap. What each paper did or reported is taken from
+% docs/literature_review.md and docs/literature_matrix.csv (source locations
+% are given there). No result of our own appears in this section.
+\section{Related Work}\label{sec:related}
+
+\emph{Fingerprinting.} Surveys~\cite{liu2007survey,he2016wifi} cover the
+field. The classic RADAR system~\cite{bahl2000radar} located a scan by the
+recorded scans nearest to it in signal space, the nearest-neighbor
+rule~\cite{cover1967nearest} behind kNN. Horus~\cite{youssef2005horus} modeled
+the variation of the signals with probabilities. Both were tested on the
+authors' own small testbeds (median error 2.94~m for RADAR, below 0.6~m on
+average for Horus), so their errors cannot be compared with other studies.
+
+\emph{The dataset.} UJIIndoorLoc~\cite{torres2014ujiindoorloc} was presented
+as the first public Wi-Fi fingerprinting database with several buildings and
+floors. Its validation file was recorded months after the training file,
+partly by new users and phones, which makes it a realistic
+test~\cite{torres2015comprehensive}. Torres-Sospedra
+et~al.~\cite{torres2015comprehensive} compared many kNN settings on it, but
+chose the best one on the file they report, so that result is optimistic.
+
+\emph{Tree models.} A comparison of classifiers on UJIIndoorLoc found kNN the
+most suitable, with boosting and bagging bringing a decision tree close to
+it~\cite{bozkurt2015comparative}. We test two tree ensembles, random
+forests~\cite{breiman2001random} and XGBoost~\cite{chen2016xgboost}, tuned and
+with our own features.
+
+\emph{Neural networks.} Nowicki and Wietrzykowski~\cite{nowicki2017loweffort}
+classified building and floor on UJIIndoorLoc with a deep neural network. Kim
+et~al.~\cite{kim2018scalable} trained one network with building, floor and
+location outputs. CNNLoc~\cite{song2019cnnloc} used a convolutional neural
+network, but its headline numbers are the best values of different runs, not
+of one model.
+
+\emph{Grouped CV.} For grouped data, random CV can seriously underestimate the
+error, and grouped (block) CV is the better
+choice~\cite{roberts2017crossvalidation}. UJIIndoorLoc shows this too: a
+network that got building and floor right for 98.2\% of a random split of the
+training file did so for only 91.1\% of the validation
+file~\cite{nowicki2017loweffort}.
+
+\emph{Gap.} We found no study that compares tuned kNN, random forests and
+XGBoost on UJIIndoorLoc with every choice made by user-group CV and the
+validation file used only once, as the test set. Phase~1 fills this gap. Our
+models still predict building, floor and position separately; multi-task
+learning~\cite{caruana1997multitask}, which learns related tasks together
+through a shared representation, is the subject of Phase~2.

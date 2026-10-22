@@ -1,0 +1,38 @@
+% Section I: Introduction -- the problem, why it matters, the three tasks and
+% our three contributions. Number: results/metrics/feature_check.csv
+% (rssi+stats 15.87 m -> rssi+stats+affinity 11.38 m, user-group CV).
+\section{Introduction}\label{sec:intro}
+
+GPS works well outdoors, but inside buildings its signals are too weak to be
+useful. Wi-Fi is a practical alternative: many buildings already have a Wi-Fi
+network, so no new hardware is needed~\cite{he2016wifi}. A phone measures the
+received signal strength (RSSI, in dBm) of every Wi-Fi access point (WAP) it
+hears: $-30$~dBm is very strong and $-100$~dBm is barely heard. One
+\emph{scan} lists these values, and this list works like a \emph{fingerprint}
+of the place where it was taken. Fingerprinting records scans at known places
+and locates a new scan by comparing it with
+them~\cite{bahl2000radar,liu2007survey}. Indoor positioning can, for
+example, guide a visitor to a room on a large campus.
+
+We use the public UJIIndoorLoc dataset~\cite{torres2014ujiindoorloc} and solve
+three tasks for every scan: predict its \emph{building} (one of three) and its
+\emph{floor} (one of up to five), two classification tasks, and its
+\emph{position} ($x$ and $y$ in meters), a regression task. The hard part is
+testing fairly. Scans recorded in a row at one spot look almost the same, so a
+random split rewards remembering scans instead of learning places. This is a
+form of data leakage: information that would not be available in real use
+reaches the model~\cite{kaufman2012leakage}. This report covers Phase~1,
+classical machine learning; Phase~2 will build a multi-task neural network.
+Our contributions are:
+\begin{itemize}
+\item \emph{A fair evaluation.} Features, settings and the final model are
+  chosen by 5-fold user-group cross-validation (CV), which holds out whole
+  users and their phones, and the test set is used only once. We also show
+  how optimistic random CV is.
+\item \emph{AP-affinity features}, our own idea. They learn from the training
+  scans where each WAP is usually heard and describe a scan by the WAPs it
+  hears. They cut the CV mean 2D error of a default random forest from 15.87 to
+  11.38~m.
+\item \emph{A tuned comparison} of kNN, Random Forest and XGBoost, with an
+  error analysis that shows what Phase~2 must improve.
+\end{itemize}

@@ -1,0 +1,120 @@
+% Section IV: Method -- fair evaluation, features (with AP-affinity), models,
+% tuning, the final-model rule and the metrics. Settings and grids:
+% src/indoorloc/config.py; chosen settings: results/tuning/best_params.json.
+% The example weights (0.27, 0.05, almost 0) and r_min = -105 dBm come from
+% indoorloc.features.APAffinity fitted on the cleaned training data.
+\section{Method}\label{sec:method}
+
+\subsection{Fair Evaluation}\label{sec:fair}
+Because a person records several scans in a row at one spot with one phone,
+random CV almost always leaves training scans from the same spot, person and
+phone for a held-out scan. We therefore use 5-fold \emph{user-group
+cross-validation (CV)}~\cite{roberts2017crossvalidation}, the GroupKFold of
+scikit-learn~\cite{pedregosa2011scikit} with the 16 user--device groups: each
+fold holds out whole groups, so every model is tested on people and phones
+that it has not seen, as for most of the test set (9 of its 11 phones are
+new). Every choice (features, settings,
+final model) is made with these folds on the training data only, and all that
+a model learns from data, including the kept WAP columns and the AP-affinity
+profiles, is learned again in each fold. The test set is used once, at the
+very end: each model is fitted on all 18,719 training scans and predicts the
+1,111 test scans. For comparison only, we also score the Baseline RF with
+\emph{random CV} (shuffled 5-fold).
+
+\subsection{Features}\label{sec:features}
+We compare three feature sets: \emph{rssi}, the RSSI of the kept WAPs (464
+columns on the full training data); \emph{rssi+stats}, which adds three
+\emph{signal statistics} (the number of WAPs heard, the strongest reading and
+the mean of the heard readings); and \emph{rssi+stats+affinity}, which adds our
+eight \emph{AP-affinity} columns.
+
+AP-affinity starts from a simple idea: if a phone hears a WAP that is mostly
+heard in building~1 on floor~2, the phone is probably there too. It is learned
+from the training rows only, in two steps. First, every WAP heard in at least
+five training scans gets a \emph{profile}: the share of its scans in each
+building (3 values), its mean floor and its mean position (2 values), each a
+weighted mean over the training scans that hear it. A stronger reading usually
+means that the phone was closer to the WAP, so it gets a larger weight
+\begin{equation}
+  w(r)=\left(\frac{r-r_{\min}}{-r_{\min}}\right)^{e},
+  \label{eq:weight}
+\end{equation}
+where $r$ is the reading in dBm, $r_{\min}$ is 1~dB below the weakest training
+reading ($-105$~dBm on the full training data), $e\approx2.718$, and $w=0$ if
+the WAP is not heard. This ``powed'' formula~\cite{torres2015comprehensive}
+gives $w=0.27$ at $-40$~dBm, $0.05$ at $-70$~dBm and almost 0 at $-100$~dBm.
+Second, a scan $s$ is described by the weighted average of the profiles of the
+known WAPs that it hears:
+\begin{equation}
+  \mathbf{p}_j=\frac{\sum_i w_{ij}\,\mathbf{t}_i}{\sum_i w_{ij}},\qquad
+  \mathbf{a}(s)=\frac{\sum_j w_{sj}\,\mathbf{p}_j}{\sum_j w_{sj}},
+  \label{eq:affinity}
+\end{equation}
+where $\mathbf{p}_j$ is the profile of WAP~$j$, $w_{ij}$ the weight of WAP~$j$
+in scan~$i$, and $\mathbf{t}_i$ holds the targets of training scan~$i$ (three
+0/1 building indicators, floor, $x$, $y$). The 6 values of $\mathbf{a}(s)$ and
+the position of the strongest known WAP in the scan give 8 columns; a scan
+that hears no known WAP gets the training means.
+
+\subsection{Models}\label{sec:models}
+Each method predicts building, floor and position with three separate models,
+one per task: two classifiers and one regressor with two outputs ($x$, $y$),
+built with scikit-learn~\cite{pedregosa2011scikit} and the XGBoost
+library~\cite{chen2016xgboost}.
+\begin{itemize}
+\item \emph{Baseline RF}: a random forest~\cite{breiman2001random} with 300
+  trees and default settings on rssi+stats.
+\item \emph{kNN}~\cite{cover1967nearest} on rssi: the vote (building, floor)
+  or mean position of the $k$ training scans with the closest RSSI values,
+  plain or weighted by closeness.
+\item \emph{Random Forest} on rssi+stats+affinity: 300 trees, each trained on
+  a random sample of the scans with a random subset of the features tried at
+  each split; the trees vote or average~\cite{breiman2001random}.
+\item \emph{XGBoost} on rssi+stats+affinity: trees added one at a time, each
+  correcting the errors of those before it~\cite{chen2016xgboost}; learning
+  rate (0.1), row sample (0.85) and column sample (0.5) are fixed.
+\end{itemize}
+
+\begin{table}[t]
+  \caption{Tuned Settings: Values Tried and the Value Chosen by CV for Each
+  Task (B: Building, F: Floor, P: Position)}
+  \label{tab:grids}
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{@{}llccc@{}}
+    \toprule
+    Setting & Values tried & B & F & P \\
+    \midrule
+    \multicolumn{5}{@{}l}{\emph{kNN} (28 settings)} \\
+    n\_neighbors ($k$) & 1, 3, 5, 7, 9, 11, 15 & 1 & 5 & 3 \\
+    weights & uniform, distance & unif. & unif. & dist. \\
+    metric & Euclidean, Manhattan & Eucl. & Manh. & Eucl. \\
+    \midrule
+    \multicolumn{5}{@{}l}{\emph{Random Forest} (300 trees, 6 settings)} \\
+    max\_features & sqrt, 0.2, 0.5 & sqrt & 0.5 & 0.5 \\
+    min\_samples\_leaf & 1, 4 & 1 & 4 & 1 \\
+    \midrule
+    \multicolumn{5}{@{}l}{\emph{XGBoost} (6 settings)} \\
+    max\_depth & 4, 6, 10 & 4 & 4 & 10 \\
+    n\_estimators & 300, 600 & 300 & 300 & 600 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Tuning and the Final Model}\label{sec:tuning}
+Each model has a small grid (Table~\ref{tab:grids}), and every setting is
+scored on the same five folds. Because each task has its own model, each task
+picks its own best setting: the highest CV accuracy for building and floor, the
+lowest CV mean 2D error for position. Before using the test set, we fixed the
+rule for the final model: the tuned model (kNN, Random Forest or XGBoost) with
+the lowest CV mean 2D error.
+
+\subsection{Metrics}\label{sec:metrics}
+Building and floor accuracy are the shares of scans with the right building
+and floor. For the position we report the mean absolute error (MAE) in $x$ and
+$y$ and the mean and median \emph{2D error}, the straight-line distance between
+the predicted and the true position. To see where the error comes from, we
+split the test scans into three cases (building wrong; building right but floor
+wrong; both right) and give each case's share of scans, mean 2D error and share
+of the total error. We also compare test scans from seen and new phones.

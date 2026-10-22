@@ -1,0 +1,28 @@
+% Section VI: Phase 2 Gap and Conclusion. Numbers: results/metrics/
+% test_results.csv, feature_check.csv, error_breakdown.csv, per_phone.csv and
+% cv_check.csv (all repeated from Section V).
+\section{Phase 2 Gap and Conclusion}\label{sec:conclusion}
+
+\emph{The gap.} Our three task models are separate and share nothing, and the
+results point to what this misses. First, no model is best at every task:
+XGBoost finds the most floors (95.2\%), Random Forest the best positions
+(7.42~m). Second, AP-affinity, a
+hand-made way of sharing location knowledge (where each WAP is heard) with all
+three tasks, gave our largest gain (CV error from 15.87 to 11.38~m); a model
+that learns such shared knowledge by itself may gain more. Third, most of the
+remaining error is position error on the right floor (86.2\% of the Random
+Forest's total error), and new phones are harder than seen ones (8.30~m
+against 5.84~m).
+
+\emph{Phase~2} will train one multi-task neural
+network~\cite{caruana1997multitask} that learns building, floor and position
+together: shared layers used by all three tasks, then three output heads. Kim
+et~al.~\cite{kim2018scalable} showed that one network with building, floor and
+location outputs can be trained on UJIIndoorLoc. We will evaluate our network
+with the same user-group CV, test set and metrics, and compare it with our
+Phase~1 models.
+
+\emph{Conclusion.} Fair testing matters most: random CV promised 3.67~m, but
+the Baseline RF reached 12.52~m on the test set. Chosen by user-group CV, the
+final Random Forest with AP-affinity found every building and 92.2\% of the
+floors, with a mean 2D error of 7.42~m.

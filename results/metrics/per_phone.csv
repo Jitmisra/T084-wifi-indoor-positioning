@@ -1,0 +1,9 @@
+model,phones,n_phones,n_scans,floor_acc,mean_2d
+baseline_rf,seen in training,2,397,0.927,11.7073
+baseline_rf,new,9,714,0.9034,12.97
+knn,seen in training,2,397,0.8917,8.9707
+knn,new,9,714,0.8655,9.3605
+rf,seen in training,2,397,0.937,5.835
+rf,new,9,714,0.9132,8.2989
+xgb,seen in training,2,397,0.9622,6.3171
+xgb,new,9,714,0.9468,8.7231

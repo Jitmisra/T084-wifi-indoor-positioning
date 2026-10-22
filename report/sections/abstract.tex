@@ -1,0 +1,18 @@
+% Abstract (included inside the abstract environment of main.tex, so no \section).
+% IEEE rule: no citations, footnotes, math or special symbols, so "percent" is
+% written out. Numbers: results/metrics/cv_check.csv (3.67 m random CV, 12.52 m
+% test), feature_check.csv (15.87 -> 11.38 m), test_results.csv (Random Forest,
+% XGBoost) and final_model.json (the final model).
+GPS fails inside buildings, but the Wi-Fi signals a phone hears show where it
+is. On the public UJIIndoorLoc data (three buildings, 520 access points), we
+predict a scan's building, floor and position with classical machine learning.
+Features, settings and the final model are chosen by user-group
+cross-validation, which holds out whole users and their phones; the test set,
+recorded months later mostly with new phones, is used once. Random
+cross-validation would have promised our Baseline RF, a default random forest,
+a mean 2D error of 3.67~m; on the test set it reached 12.52~m. Adding our AP-affinity features, which learn where each access
+point is usually heard, cut its cross-validated error from 15.87~m to 11.38~m.
+The final model, a tuned Random Forest, finds the building of every test scan
+and the floor of 92.2 percent, with a mean 2D error of 7.42~m. No model is best
+at every task (XGBoost finds more floors, 95.2 percent), and our three task
+models share nothing, which motivates one multi-task network in Phase~2.

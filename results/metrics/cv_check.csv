@@ -1,0 +1,4 @@
+evaluation,building_acc,floor_acc,mean_2d
+random CV,1.0,0.9987,3.6655
+user-group CV,0.9965,0.7799,15.8709
+test set,0.9982,0.9118,12.5188

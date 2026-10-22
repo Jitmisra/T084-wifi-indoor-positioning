@@ -1,0 +1,32 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Raw data: the two CSVs are committed (see data/README.md); a downloaded zip is not
+data/raw/**/*.zip
+
+# Quick check runs and run logs (the rest of results/ is committed)
+results/_quick/
+results/logs/
+
+# LaTeX build artifacts (report/main.pdf is committed)
+*.aux
+*.log
+*.bbl
+*.blg
+*.out
+*.synctex.gz
+
+# OS
+.DS_Store
+
+# Lock files that Office and LibreOffice create while the slide deck is open
+~$*
+.~lock.*#

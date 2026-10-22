@@ -1,0 +1,4 @@
+feature_set,building_acc,building_acc_std,floor_acc,floor_acc_std,mean_2d,mean_2d_std
+rssi,0.9962,0.0041,0.7849,0.1524,15.5538,4.9232
+rssi+stats,0.9965,0.0037,0.7799,0.1565,15.8709,4.8976
+rssi+stats+affinity,0.9966,0.0056,0.8057,0.1483,11.3759,4.1129
