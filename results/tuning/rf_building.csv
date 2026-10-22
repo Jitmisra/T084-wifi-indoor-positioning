@@ -1,0 +1,7 @@
+max_features,min_samples_leaf,cv_mean,cv_std,chosen
+sqrt,1,0.9966,0.0056,True
+sqrt,4,0.9964,0.0058,False
+0.2,1,0.9931,0.0128,False
+0.2,4,0.9928,0.0135,False
+0.5,1,0.9942,0.0106,False
+0.5,4,0.9939,0.011,False

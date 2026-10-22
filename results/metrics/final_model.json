@@ -1,0 +1,20 @@
+{
+  "final_model": "rf",
+  "name": "Random Forest",
+  "rule": "lowest CV mean 2D error among kNN, Random Forest and XGBoost",
+  "cv_building_acc": {
+    "knn": 0.9929,
+    "rf": 0.9966,
+    "xgb": 0.9934
+  },
+  "cv_floor_acc": {
+    "knn": 0.8238,
+    "rf": 0.8355,
+    "xgb": 0.8538
+  },
+  "cv_mean_2d": {
+    "knn": 12.7517,
+    "rf": 11.0926,
+    "xgb": 11.2493
+  }
+}

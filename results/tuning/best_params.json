@@ -1,0 +1,47 @@
+{
+  "knn": {
+    "building": {
+      "n_neighbors": 1,
+      "weights": "uniform",
+      "metric": "euclidean"
+    },
+    "floor": {
+      "n_neighbors": 5,
+      "weights": "uniform",
+      "metric": "manhattan"
+    },
+    "position": {
+      "n_neighbors": 3,
+      "weights": "distance",
+      "metric": "euclidean"
+    }
+  },
+  "rf": {
+    "building": {
+      "max_features": "sqrt",
+      "min_samples_leaf": 1
+    },
+    "floor": {
+      "max_features": 0.5,
+      "min_samples_leaf": 4
+    },
+    "position": {
+      "max_features": 0.5,
+      "min_samples_leaf": 1
+    }
+  },
+  "xgb": {
+    "building": {
+      "max_depth": 4,
+      "n_estimators": 300
+    },
+    "floor": {
+      "max_depth": 4,
+      "n_estimators": 300
+    },
+    "position": {
+      "max_depth": 10,
+      "n_estimators": 600
+    }
+  }
+}

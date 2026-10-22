@@ -1,0 +1,7 @@
+max_depth,n_estimators,cv_mean,cv_std,chosen
+4,300,0.8538,0.1048,True
+4,600,0.8504,0.1068,False
+6,300,0.8502,0.1098,False
+6,600,0.8501,0.1093,False
+10,300,0.8487,0.1105,False
+10,600,0.8484,0.1103,False

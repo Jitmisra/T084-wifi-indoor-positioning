@@ -1,0 +1,5 @@
+model,name,building_acc,floor_acc,mae_x,mae_y,mean_2d,median_2d
+baseline_rf,Baseline RF,0.9982,0.9118,8.6817,7.3997,12.5188,7.7044
+knn,kNN,0.9982,0.8749,6.1224,5.7046,9.2212,5.8812
+rf,Random Forest,1.0,0.9217,4.7738,4.6393,7.4185,5.3402
+xgb,XGBoost,1.0,0.9523,5.1833,4.7663,7.8633,6.1854
