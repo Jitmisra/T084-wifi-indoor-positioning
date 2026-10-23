@@ -86,6 +86,9 @@ make all     # data -> test -> run -> notebooks -> report
   heard reading); AP-affinity: each WAP heard in at least 5 training scans gets a profile (building
   shares, mean floor and location), and a scan gets the weighted average of the profiles of the WAPs
   it hears (stronger readings count more) plus the location of its strongest known WAP.
+- **No extra missingness columns, no scaling.** −110 already marks "not heard" for trees
+  (and `n_heard` counts heard WAPs); trees ignore scale and all RSSI columns share one unit (dBm).
+  Scaling, fitted on training data only, comes in Phase 2 for the neural network.
 - **Models.** Three separate models per method: building, floor, position. Baseline RF: 300 trees,
   default settings, `rssi` + signal statistics. kNN: `rssi`. Random Forest and XGBoost: all
   features. Each task picks its own setting from a small grid by CV ([tuning](results/tuning/)).
@@ -104,6 +107,8 @@ Team T084 · Section D · Project 9 · Newton School of Technology, Rishihood Un
 | Agnik Misra | 2401010044 | 
 | Kartikey Gupta | 2401010214 |
 | Lokendra Singh | 2401010254 |
+
+Who did what, file by file (code, tests, notebooks, report sections, slides): [CONTRIBUTIONS.md](CONTRIBUTIONS.md).
 
 ## Data and license
 

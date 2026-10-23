@@ -56,6 +56,15 @@ in scan~$i$, and $\mathbf{t}_i$ holds the targets of training scan~$i$ (three
 the position of the strongest known WAP in the scan give 8 columns; a scan
 that hears no known WAP gets the training means.
 
+\emph{Missing values and scaling.} A WAP that is not heard gets $-110$~dBm in
+both files, below every real reading. We add no separate heard/not-heard
+column per WAP: for a tree, a split below $-105$~dBm already means ``not
+heard'', and \texttt{n\_heard} counts the heard WAPs. We do not scale the RSSI:
+trees use only the order of the values, and all RSSI columns share one unit
+(dBm), so kNN treats them alike. Nothing is ever fitted on the test set.
+Scaling, fitted on the training data only, is needed in Phase~2, since neural
+networks train badly on unscaled inputs.
+
 \subsection{Models}\label{sec:models}
 Each method predicts building, floor and position with three separate models,
 one per task: two classifiers and one regressor with two outputs ($x$, $y$),
@@ -74,6 +83,23 @@ library~\cite{chen2016xgboost}.
   correcting the errors of those before it~\cite{chen2016xgboost}; learning
   rate (0.1), row sample (0.85) and column sample (0.5) are fixed.
 \end{itemize}
+In formulas: kNN compares two scans $\mathbf{r},\mathbf{r}'$ (RSSI vectors)
+with the Euclidean or the Manhattan distance,
+\begin{equation}
+  d_2=\sqrt{\textstyle\sum_j (r_j-r'_j)^2},\qquad
+  d_1=\textstyle\sum_j |r_j-r'_j|.
+  \label{eq:knn}
+\end{equation}
+A classification tree picks, at each node, the split that most lowers the Gini
+impurity $G=1-\sum_c p_c^2$, where $p_c$ is the share of class $c$ in the node
+($G=0$ when the node is pure); a regression tree lowers the squared error.
+XGBoost builds its prediction step by step,
+\begin{equation}
+  F_m(\mathbf{x})=F_{m-1}(\mathbf{x})+\eta\,f_m(\mathbf{x}),
+  \label{eq:boost}
+\end{equation}
+where each new tree $f_m$ is fitted to reduce the remaining loss and
+$\eta=0.1$ is the learning rate.
 
 \begin{table}[t]
   \caption{Tuned Settings: Values Tried and the Value Chosen by CV for Each
@@ -114,7 +140,14 @@ the lowest CV mean 2D error.
 Building and floor accuracy are the shares of scans with the right building
 and floor. For the position we report the mean absolute error (MAE) in $x$ and
 $y$ and the mean and median \emph{2D error}, the straight-line distance between
-the predicted and the true position. To see where the error comes from, we
+the predicted and the true position: for test scan $i$ with true position
+$(x_i,y_i)$ and prediction $(\hat x_i,\hat y_i)$,
+\begin{equation}
+  \mathrm{MAE}_x=\tfrac{1}{N}\textstyle\sum_i|\hat x_i-x_i|,\quad
+  e_i=\sqrt{(\hat x_i-x_i)^2+(\hat y_i-y_i)^2}.
+  \label{eq:metrics}
+\end{equation}
+To see where the error comes from, we
 split the test scans into three cases (building wrong; building right but floor
 wrong; both right) and give each case's share of scans, mean 2D error and share
 of the total error. We also compare test scans from seen and new phones.
