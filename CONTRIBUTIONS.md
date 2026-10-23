@@ -59,7 +59,7 @@ literature       fair split           AP-affinity         test results          
 | --- | --- |
 | Code | [src/indoorloc/metrics.py](src/indoorloc/metrics.py) (errors, 3-case breakdown, per phone, floor confusion), [src/indoorloc/plots.py](src/indoorloc/plots.py) (all figures) |
 | Tests | [tests/test_metrics.py](tests/test_metrics.py) |
-| Notebook | [03_ml_models_evaluation.ipynb](notebooks/03_ml_models_evaluation.ipynb), sections 5–7 |
+| Notebook | [03_ml_models_evaluation.ipynb](notebooks/03_ml_models_evaluation.ipynb), sections 5–9 |
 | Results | [error_breakdown.csv](results/metrics/error_breakdown.csv), [per_phone.csv](results/metrics/per_phone.csv), [floor_confusion.csv](results/metrics/floor_confusion.csv), figures `floor_confusion`, `error_map` |
 | Report | Method: Metrics, Results: Where the Error Comes From, [Phase 2 Gap and Conclusion](report/sections/conclusion.tex) |
 | Slides | 10–11: where the errors are, the Phase 2 gap |
