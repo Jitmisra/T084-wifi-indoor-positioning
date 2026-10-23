@@ -3,7 +3,7 @@ import pytest
 from conftest import make_campus
 
 from indoorloc import data
-from indoorloc.config import FILL_VALUE, NOT_HEARD, TRAIN_CSV, WAP_COLS
+from indoorloc.config import FILL_VALUE, NOT_HEARD, TRAIN_CSV, 
 
 
 def test_load_csv_turns_the_not_heard_code_into_minus_110(tmp_path, campus):
