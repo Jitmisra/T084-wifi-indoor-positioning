@@ -97,13 +97,13 @@ make all     # data -> test -> run -> notebooks -> report
 
 Team T084 · Section D · Project 9 · Newton School of Technology, Rishihood University, Sonipat, Haryana, India.
 
-| Name | Enrollment No. | Study area |
-| --- | --- | --- |
-| Gauri Mehrotra | 2401010170 | Problem and literature review |
-| Ansh | 2401010077 | Data quality, EDA and the fair split |
-| Agnik Misra | 2401010044 | Features: signal statistics and AP-affinity |
-| Kartikey Gupta | 2401010214 | Models, tuning and results |
-| Lokendra Singh | 2401010254 | Error analysis and the Phase 2 gap |
+| Name | Enrollment No. |
+| --- | --- | 
+| Gauri Mehrotra | 2401010170 |
+| Ansh | 2401010077 | 
+| Agnik Misra | 2401010044 | 
+| Kartikey Gupta | 2401010214 |
+| Lokendra Singh | 2401010254 |
 
 ## Data and license
 
