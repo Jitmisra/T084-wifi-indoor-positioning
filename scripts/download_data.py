@@ -14,7 +14,7 @@ import zipfile
 from pathlib import Path
 
  
- 
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))  # no install needed
 
 from indoorloc.config import DATA_URL, RAW_DIR, SHA256  # noqa: E402
@@ -44,6 +44,7 @@ def main() -> int:
         print(f"{'OK    ' if ok else 'FAILED'} {path}")
         all_ok = all_ok and ok
     return 0 if all_ok else 1
+
 
 
 if __name__ == "__main__":
