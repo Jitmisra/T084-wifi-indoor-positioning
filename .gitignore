@@ -15,6 +15,7 @@ data/raw/**/*.zip
 # Quick check runs and run logs (the rest of results/ is committed)
 results/_quick/
 results/logs/
+results/phase2/logs/
 
 # LaTeX build artifacts (report/main.pdf is committed)
 *.aux

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "indoorloc"
 version = "0.1.0"
-description = "Wi-Fi fingerprinting indoor positioning on UJIIndoorLoc: building, floor and position prediction with kNN, Random Forest and XGBoost (Phase 1)."
+description = "Wi-Fi fingerprinting indoor positioning on UJIIndoorLoc: building, floor and position prediction with kNN, Random Forest and XGBoost (Phase 1) and a multi-task neural network (Phase 2)."
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -16,7 +16,7 @@ authors = [
     { name = "Kartikey Gupta", email = "kartikey.2024@nst.rishihood.edu.in" },
     { name = "Lokendra Singh", email = "lokendra.singh2024@nst.rishihood.edu.in" },
 ]
-keywords = ["indoor positioning", "wi-fi fingerprinting", "UJIIndoorLoc", "machine learning"]
+keywords = ["indoor positioning", "wi-fi fingerprinting", "UJIIndoorLoc", "machine learning", "multi-task learning"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
@@ -31,6 +31,7 @@ dependencies = [
     "scikit-learn>=1.6",
     "xgboost>=2.1",
     "matplotlib>=3.9",
+    "torch>=2.2",
     # tools for `make test` and `make notebooks`
     "pytest>=8.0",
     "nbconvert>=7.16",

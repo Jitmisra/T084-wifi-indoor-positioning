@@ -3,7 +3,6 @@
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
-from xgboost import XGBClassifier, XGBRegressor
 
 from .config import COORD_COLS, RF_TREES, SEED, XGB_FIXED
 from .features import FeatureBuilder
@@ -27,6 +26,11 @@ def make_estimator(family: str, task: str, params: dict | None = None):
         settings = {"n_estimators": RF_TREES} | params  # a tuned value replaces the fixed one
         return model(**settings, random_state=SEED, n_jobs=-1)
     if family == "xgb":
+        # Why imported here: XGBoost and PyTorch each bring their own copy of the OpenMP library,
+        # and on macOS one process that uses both crashes. Phase 2 (PyTorch) never builds an
+        # XGBoost model, so it never loads XGBoost.
+        from xgboost import XGBClassifier, XGBRegressor
+
         model = XGBClassifier if classify else XGBRegressor
         settings = XGB_FIXED | params
         return model(**settings, random_state=SEED, n_jobs=-1)

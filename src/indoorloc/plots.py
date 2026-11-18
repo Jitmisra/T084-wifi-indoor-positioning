@@ -132,11 +132,15 @@ def feature_check(table: pd.DataFrame):
     return fig
 
 
-def model_comparison(cv_results: pd.DataFrame, test_results: pd.DataFrame):
-    """Floor accuracy and mean 2D error of every model: user-group CV next to the test set."""
-    fig, axes = _figure(PAGE, 2.3, ncols=2)
+def model_comparison(cv_results: pd.DataFrame, test_results: pd.DataFrame, names=None, split=None):
+    """Floor accuracy and mean 2D error of every model: user-group CV next to the test set.
+
+    `names` are the labels under the bars (default: the names of the Phase 1 models); `split`,
+    if given, is the position of the first Phase 2 model, where a dotted line is drawn.
+    """
+    fig, axes = _figure(PAGE, 2.3 if split is None else 2.6, ncols=2)
     x = np.arange(len(cv_results))
-    names = [MODEL_NAMES[key] for key in cv_results["model"]]
+    names = names or [MODEL_NAMES[key] for key in cv_results["model"]]
     panels = (("floor_acc", "Floor accuracy", 3), ("mean_2d", "Mean 2D error (m)", 2))
     for ax, (metric, ylabel, digits) in zip(axes, panels, strict=True):
         ax.bar(x - 0.19, cv_results[metric], width=0.36, color=BLUE, label="User-group CV")
@@ -144,6 +148,9 @@ def model_comparison(cv_results: pd.DataFrame, test_results: pd.DataFrame):
         _write_values(ax, x + 0.19, test_results[metric], test_results[metric], digits)
         ax.set_xticks(x, names)
         ax.set_ylabel(ylabel)
+        if split is not None:  # Phase 1 models left of the line, Phase 2 networks right of it
+            ax.axvline(split - 0.5, color=GRAY, lw=0.8, ls=":")
+            ax.tick_params(axis="x", labelsize=6)  # Why: eight labels must fit under the bars
     fig.legend(*axes[0].get_legend_handles_labels(), loc="outside upper center", ncols=2)
     return fig
 
@@ -196,4 +203,49 @@ def error_map(predictions: pd.DataFrame):
     axes[0].set_ylabel("Meters north")
     axes[0].legend(loc="upper left", markerscale=2)
     fig.colorbar(points, ax=list(axes), label="2D error (m)", extend="max", shrink=0.8)
+    return fig
+
+
+def learning_curves(curves: pd.DataFrame, labels: dict):
+    """CV mean 2D error and floor accuracy after every few epochs, one line per network.
+
+    `curves` has one row per network variant and number of epochs (means over the folds);
+    `labels` maps each variant to its legend text, in the order of the lines.
+    """
+    fig, axes = _figure(PAGE, 2.3, ncols=2)
+    panels = (("mean_2d", "Mean 2D error (m, CV)"), ("floor_acc", "Floor accuracy (CV)"))
+    for ax, (metric, ylabel) in zip(axes, panels, strict=True):
+        for (variant, label), color in zip(labels.items(), (BLUE, ORANGE, AQUA), strict=False):
+            rows = curves[curves["variant"] == variant]
+            ax.plot(
+                rows["epoch"], rows[metric], color=color, lw=1.4, marker="o", ms=2.5, label=label
+            )
+        ax.set(xlabel="Epochs", ylabel=ylabel)
+    fig.legend(*axes[0].get_legend_handles_labels(), loc="outside upper center", ncols=len(labels))
+    return fig
+
+
+def ablation(table: pd.DataFrame):
+    """CV mean 2D error and floor accuracy of the final network (top bar) and of each variant
+    that changes one thing; `table` has a `label` column and the CV means."""
+    fig, axes = _figure(PAGE, 0.35 * len(table) + 0.7, ncols=2)
+    y = np.arange(len(table))[::-1]  # the first row (the final network) on top
+    colors = [BLUE] + [GRAY] * (len(table) - 1)
+    panels = (("mean_2d", "Mean 2D error (m, CV)", 2), ("floor_acc", "Floor accuracy (CV)", 3))
+    for ax, (metric, xlabel, digits) in zip(axes, panels, strict=True):
+        ax.barh(y, table[metric], color=colors, height=0.6)
+        for yi, value in zip(y, table[metric], strict=True):
+            text = f"{value:.{digits}f}"
+            ax.annotate(
+                text,
+                (value, yi),
+                xytext=(3, 0),
+                textcoords="offset points",
+                va="center",
+                fontsize=6.5,
+                color=MUTED,
+            )
+        ax.set_yticks(y, table["label"] if ax is axes[0] else [""] * len(y))
+        ax.set_xlabel(xlabel)
+        ax.margins(x=0.15)  # room for the values right of the longest bar
     return fig

@@ -66,6 +66,57 @@ MODEL_FEATURES = {
     "xgb": "rssi+stats+affinity",
 }
 
+# Phase 2: the neural networks (indoorloc.dl). Settings in DL_GRID are tuned by CV; DL_FIXED
+# holds the rest (a tuned value replaces the fixed one)
+DL_FIXED = {
+    "hidden": (512, 256, 128),  # three shared layers, each half as wide as the one before
+    "dropout": 0.2,
+    "learning_rate": 1e-3,  # at the start; it falls to 0 along a cosine curve (indoorloc.dl)
+    "weight_decay": 0.01,  # AdamW's usual default
+    "batch_size": 256,
+    "position_weight": 100.0,  # weight of the position loss next to the two classification losses
+    "hide_wap_rate": 0.1,  # share of the heard WAPs hidden at random in every training batch
+}
+# Why the position weight: it decides how much the shared layers serve position versus building
+# and floor. A 10 m error is only about 0.1 in standardized units, so the position loss needs a
+# large weight not to be drowned by the two classification losses.
+DL_GRID = {"position_weight": [30.0, 100.0, 300.0]}
+DL_EPOCHS = 200  # passes over the training scans
+DL_EVERY = 10  # the held-out folds are scored after every 10 epochs (for the learning curves)
+DL_SEEDS = [42, 43, 44, 45, 46]  # seed check: the final network trained five times
+# Why another seed for the ablation: its reference must not be the very run that won the tuning,
+# which would favor it; all ablation networks share this seed, so only the one change differs
+DL_ABLATION_SEED = 43
+DL_CV_SEEDS = [44, 45]  # CV seed check: the full network with two more seeds, to see CV noise
+# The networks of the ablation study: the tuned hybrid multi-task network first, then one change
+# at a time. "name" is used in tables, "short" under the bars of figures, "label" in the ablation.
+_DL_BASE = {"hybrid": True, "multitask": True, "indicators": True, "params": {}}
+DL_VARIANTS = {
+    "hybrid_mlp": _DL_BASE | {"name": "Hybrid MLP", "short": "Hybrid\nMLP", "label": "Hybrid MLP"},
+    "hybrid_single": _DL_BASE
+    | {
+        "multitask": False,
+        "name": "Hybrid single-task MLPs",
+        "short": "Single-\ntask",
+        "label": "three single-task networks",
+    },
+    "mlp": _DL_BASE
+    | {"hybrid": False, "name": "MLP", "short": "MLP", "label": "no Phase 1 features"},
+    "no_indicators": _DL_BASE | {"indicators": False, "label": "no heard indicators"},
+    "no_hidden_waps": _DL_BASE | {"params": {"hide_wap_rate": 0.0}, "label": "no hidden WAPs"},
+    "no_regularization": _DL_BASE
+    | {"params": {"dropout": 0.0, "weight_decay": 0.0}, "label": "no dropout, no weight decay"},
+}
+DL_CANDIDATES = ["mlp", "hybrid_single", "hybrid_mlp"]  # the networks tested on the test set
+# Why fixed in advance: the brief asks for one shared network with three heads, so this is our
+# Phase 2 model; the other two candidates are tested next to it for comparison
+DL_FINAL = "hybrid_mlp"
+DL_CURVES = ["hybrid_mlp", "no_regularization"]  # the lines of the learning-curve figure
+# Phase 2 hybrid (indoorloc.hybrid): forest weights tried for the blend of the Phase 1 Random
+# Forest and the final network, per task (0 = the network alone, 1 = the forest alone)
+BLEND_WEIGHTS = [round(0.1 * i, 1) for i in range(11)]
+BLEND = {"name": "Blend: Random Forest + Hybrid MLP", "short": "Blend"}
+
 # --quick: a small, fast run that only checks that everything works (written to results/_quick/)
 QUICK_SCANS = 3000
 QUICK_FOLDS = 3

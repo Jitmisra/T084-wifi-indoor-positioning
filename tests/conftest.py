@@ -7,6 +7,9 @@ import pandas as pd
 import pytest
 
 os.environ.setdefault("MPLBACKEND", "Agg")  # draw figures without a screen
+# Why one thread: the tests train XGBoost and PyTorch in one process; their two copies of the
+# OpenMP library crash on macOS when both use several threads (the data here are tiny anyway)
+os.environ.setdefault("OMP_NUM_THREADS", "1")
 
 from indoorloc.config import FILL_VALUE, FLOORS_PER_BUILDING, WAP_COLS  # noqa: E402
 
