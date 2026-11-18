@@ -37,13 +37,14 @@ def main() -> int:
             name = Path(member).name
             if name in missing:
                 (RAW_DIR / name).write_bytes(archive.read(member))
-                
+
     all_ok = True
     for name, expected in SHA256.items():
         path = RAW_DIR / name
         ok = path.exists() and sha256(path) == expected
         print(f"{'OK    ' if ok else 'FAILED'} {path}")
         all_ok = all_ok and ok
+        
     return 0 if all_ok else 1
 
 
