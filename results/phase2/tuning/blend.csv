@@ -1,0 +1,12 @@
+forest_weight,building_acc,floor_acc,mean_2d,chosen_building,chosen_floor,chosen_position
+0.0,0.996117,0.787961,9.205344,False,False,False
+0.1,0.996117,0.790905,9.140991,False,False,True
+0.2,0.996332,0.793902,9.145904,False,False,False
+0.3,0.996439,0.797564,9.209084,False,False,False
+0.4,0.99666,0.802063,9.327681,False,False,False
+0.5,0.997101,0.80738,9.500486,False,False,False
+0.6,0.997796,0.821442,9.725011,False,False,False
+0.7,0.997796,0.83235,9.996109,False,False,False
+0.8,0.997816,0.8323,10.313255,True,False,False
+0.9,0.997174,0.83432,10.677596,False,False,False
+1.0,0.996624,0.835537,11.092621,False,True,False

@@ -1,0 +1,7 @@
+variant,label,building_acc,floor_acc,mean_2d,building_acc_std,floor_acc_std,mean_2d_std,change_mean_2d,folds_worse
+hybrid_mlp,Hybrid MLP,0.996117,0.787961,9.205344,0.00693,0.158126,1.910095,0.0,0
+hybrid_single,three single-task networks,0.997495,0.847597,8.902727,0.003614,0.130028,1.807832,-0.302617,0
+mlp,no Phase 1 features,0.997851,0.794584,9.169518,0.003416,0.141744,2.177807,-0.035825,2
+no_indicators,no heard indicators,0.997267,0.846102,9.788529,0.005549,0.128787,2.393743,0.583185,4
+no_hidden_waps,no hidden WAPs,0.998797,0.804606,9.369227,0.000955,0.142936,1.754186,0.163883,4
+no_regularization,"no dropout, no weight decay",0.990181,0.827497,10.284359,0.016262,0.10107,2.762633,1.079015,5

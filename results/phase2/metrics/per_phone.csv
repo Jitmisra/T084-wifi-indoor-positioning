@@ -1,0 +1,9 @@
+model,phones,n_phones,n_scans,floor_acc,mean_2d
+mlp,seen in training,2,397,0.93199,6.638808
+mlp,new,9,714,0.896359,9.437142
+hybrid_single,seen in training,2,397,0.95466,6.378691
+hybrid_single,new,9,714,0.934174,8.951782
+hybrid_mlp,seen in training,2,397,0.934509,6.62106
+hybrid_mlp,new,9,714,0.893557,9.272333
+blend,seen in training,2,397,0.937028,6.38756
+blend,new,9,714,0.913165,9.048888

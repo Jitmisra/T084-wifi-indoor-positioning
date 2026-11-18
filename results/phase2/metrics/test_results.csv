@@ -1,0 +1,5 @@
+model,name,building_acc,floor_acc,mae_x,mae_y,mean_2d,median_2d
+mlp,MLP,1.0,0.909091,5.715901,5.112326,8.437197,6.333521
+hybrid_single,Hybrid single-task MLPs,1.0,0.941494,5.398048,4.926867,8.032324,5.747076
+hybrid_mlp,Hybrid MLP,0.9991,0.908191,5.638716,5.057844,8.324939,6.101248
+blend,Blend: Random Forest + Hybrid MLP,1.0,0.921692,5.462095,4.934457,8.097901,5.923207

@@ -1,0 +1,13 @@
+model,case,n_scans,share_of_scans,mean_2d,share_of_error
+mlp,building wrong,0,0.0,,0.0
+mlp,"building right, floor wrong",101,0.090909,14.656759,0.157924
+mlp,both right,1010,0.909091,7.815241,0.842076
+hybrid_single,building wrong,0,0.0,,0.0
+hybrid_single,"building right, floor wrong",65,0.058506,13.606325,0.099106
+hybrid_single,both right,1046,0.941494,7.685948,0.900894
+hybrid_mlp,building wrong,1,0.0009,39.803685,0.004304
+hybrid_mlp,"building right, floor wrong",101,0.090909,12.936788,0.141271
+hybrid_mlp,both right,1009,0.908191,7.832099,0.854426
+blend,building wrong,0,0.0,,0.0
+blend,"building right, floor wrong",87,0.078308,11.958089,0.115636
+blend,both right,1024,0.921692,7.769936,0.884364

@@ -1,0 +1,4 @@
+position_weight,building_acc,floor_acc,mean_2d,building_acc_std,floor_acc_std,mean_2d_std,chosen
+30.0,0.99258,0.825145,9.511539,0.012129,0.146478,2.114961,False
+100.0,0.992805,0.799162,9.250929,0.013849,0.155026,2.133133,False
+300.0,0.99283,0.81475,9.249904,0.008497,0.14554,2.116245,True

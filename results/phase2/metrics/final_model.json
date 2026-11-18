@@ -1,0 +1,20 @@
+{
+  "final_model": "hybrid_mlp",
+  "name": "Hybrid MLP",
+  "rule": "fixed before the test set was used: the hybrid multi-task network (one shared trunk, three heads), with the setting of lowest CV mean 2D error; the other candidates are tested next to it",
+  "cv_building_acc": {
+    "mlp": 0.9979,
+    "hybrid_single": 0.9975,
+    "hybrid_mlp": 0.9961
+  },
+  "cv_floor_acc": {
+    "mlp": 0.7946,
+    "hybrid_single": 0.8476,
+    "hybrid_mlp": 0.788
+  },
+  "cv_mean_2d": {
+    "mlp": 9.1695,
+    "hybrid_single": 8.9027,
+    "hybrid_mlp": 9.2053
+  }
+}

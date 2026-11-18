@@ -1,0 +1,18 @@
+{
+  "hybrid_mlp": {
+    "position_weight": 300.0
+  },
+  "fixed": {
+    "hidden": [
+      512,
+      256,
+      128
+    ],
+    "dropout": 0.2,
+    "learning_rate": 0.001,
+    "weight_decay": 0.01,
+    "batch_size": 256,
+    "hide_wap_rate": 0.1,
+    "epochs": 200
+  }
+}

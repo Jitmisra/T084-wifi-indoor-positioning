@@ -1,0 +1,12 @@
+{
+  "forest_weights": {
+    "building": 0.8,
+    "floor": 1.0,
+    "position": 0.1
+  },
+  "cv": {
+    "building_acc": 0.9978157812326055,
+    "floor_acc": 0.8355366376487506,
+    "mean_2d": 9.140990689318603
+  }
+}
