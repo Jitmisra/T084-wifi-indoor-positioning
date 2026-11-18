@@ -37,6 +37,7 @@ def main() -> int:
             name = Path(member).name
             if name in missing:
                 (RAW_DIR / name).write_bytes(archive.read(member))
+                
     all_ok = True
     for name, expected in SHA256.items():
         path = RAW_DIR / name
