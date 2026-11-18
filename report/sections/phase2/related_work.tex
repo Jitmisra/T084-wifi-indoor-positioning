@@ -1,0 +1,61 @@
+% Section II: Related Work (deep learning) -- multi-task learning, deep networks
+% for Wi-Fi fingerprinting, inputs and regularization, trees vs. networks and
+% hybrids, and the gap. What each paper did or reported is taken from
+% docs/literature_review_phase2.md and docs/literature_matrix_phase2.csv
+% (with source locations). No result of our own appears in this section.
+\section{Related Work}\label{sec:related}
+
+\emph{Multi-task learning.} Caruana~\cite{caruana1997multitask} showed that
+related tasks learned in parallel with a shared representation can help each
+other. In deep networks this is usually \emph{hard parameter sharing}: shared
+hidden layers and one output layer per task~\cite{ruder2017overview}. It
+reduces overfitting, but can fail when the tasks are not closely
+related~\cite{ruder2017overview}, and the results depend strongly on the
+weights of the task losses~\cite{kendall2018multi}.
+
+\emph{Deep networks for fingerprinting.} Phase~1 reviewed the autoencoder
+networks of~\cite{nowicki2017loweffort,kim2018scalable} and
+CNNLoc~\cite{song2019cnnloc}. Kim's single-input multi-output (SIMO)
+network~\cite{kim2018simo} has the design of our brief: a shared hidden layer, a
+floor head and a coordinate regression head (on another dataset). On
+UJIIndoorLoc, with its published split and averages over 10 runs, a SIMO-style
+MLP reached a mean 2D error of 9.20~m, but a single-task position network
+reached 8.25~m~\cite{laska2022multitask}; a position network started from a
+trained building-and-floor network was slightly better than one network
+trained jointly~\cite{li2025hierarchical}. Hierarchical recurrent networks
+found 95.23\% of the floors, with a setting that appears to have been read off
+the same test results~\cite{elesawi2021hierarchical}. The design closest to ours, a shared
+trunk with three heads and a strongly weighted position
+loss~\cite{li2026hybrid}, tuned part of its system on the file it reports as
+its test set. Results are hard to compare: metrics differ (2D or 3D),
+settings are often chosen on the test file, and one network gave 9.52~m on the
+published split but 2.36~m on a random re-split~\cite{kargarbarzi2024edge}; a
+review names the lack of a common evaluation framework as a main
+problem~\cite{alhomayani2020deep}.
+
+\emph{Inputs and regularization.} Scaling each reading to $[0,1]$ with not
+heard as 0~\cite{kargarbarzi2024edge,li2026hybrid}, adding a 0/1 ``detected''
+channel per WAP and hiding WAPs at random during training (a
+preprint~\cite{eftekharizadeh2026physics}) have all been used before; hiding
+inputs is a form of dropout~\cite{srivastava2014dropout}. We train with
+ReLU~\cite{nair2010rectified,goodfellow2016deep}, AdamW~\cite{kingma2015adam,%
+loshchilov2019decoupled} and dropout~\cite{srivastava2014dropout}.
+
+\emph{Trees, networks and hybrids.} On medium-sized tabular benchmarks, tree
+models remain state of the art and MLPs suffer from uninformative
+features~\cite{grinsztajn2022tree}. That benchmark leaves out signal data like
+ours and missing values, so it only suggests that a network may not beat our
+Phase~1 Random Forest. Wide-and-deep models train a network jointly with
+hand-made features~\cite{cheng2016wide}; on tabular data, an ensemble of
+networks and XGBoost beat XGBoost alone~\cite{shwartzziv2022tabular}; and
+fingerprinting hybrids match scans with weighted kNN in a learned
+space~\cite{park2024wknn}, or average such a kNN position with the network's
+own, with the weight chosen on the file reported as the test
+set~\cite{li2026hybrid}.
+
+\emph{Gap.} We found no study on UJIIndoorLoc that (i) compares a multi-task
+network with tuned tree models and with single-task networks while tuning every
+setting by user-group CV and using the test file only at the end, and (ii)
+combines learned location profiles of the WAPs (our Phase~1 AP-affinity) and a
+tree model with a multi-task network, with an ablation that measures their
+value. Phase~2 does both.

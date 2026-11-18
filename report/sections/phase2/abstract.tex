@@ -1,0 +1,21 @@
+% Abstract (included inside the abstract environment of main_phase2.tex, so no
+% \section). IEEE rule: no citations, footnotes, math or special symbols, so
+% "percent" is written out. Numbers: results/phase2/metrics/comparison.csv,
+% ablation.csv, seeds.csv and tuning/blend.json; Phase 1: results/metrics/.
+GPS fails inside buildings, but the Wi-Fi signals a phone hears show where it
+is. On the public UJIIndoorLoc data we predict a scan's building, floor and
+position with one multi-task neural network: shared hidden layers feed a
+building head, a floor head and a position head. Its inputs are the scaled
+signal strengths and heard indicators of the access points, plus our Phase 1
+features as a first hybrid. As in Phase 1, settings are tuned by cross-validation
+that holds out whole users with their phones, and the test set, recorded months
+later mostly with new phones, is used only at the end. An ablation study shows
+that dropout with weight decay and the heard indicators help, while the Phase 1
+features do not, and that three single-task networks beat the shared one. In
+cross-validation the network beat our Phase 1 Random Forest (9.21 against 11.09
+m mean 2D error), but on the test set it reached 8.32 m and 90.8 percent of
+floors, against 7.42 m and 92.2 percent for the forest; over five seeds it
+scored 8.21 m. A second hybrid, a blend of the forest and the network with
+one weight per task chosen by cross-validation, beat both in cross-validation
+(9.14 m) and improved the network on the test set (8.10 m and 92.2 percent of
+floors), but not the forest's position error.

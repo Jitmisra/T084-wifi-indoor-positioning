@@ -1,0 +1,163 @@
+% Section IV: Method -- the network, its loss, training and regularization,
+% the hybrid inputs, tuning and the final-network rule, the ablation study and
+% the metrics. Settings: src/indoorloc/config.py (DL_FIXED, DL_GRID, DL_EPOCHS,
+% DL_VARIANTS); chosen setting: results/phase2/tuning/best_params.json.
+% Weight counts: notebook 04, section 6 (indoorloc.dl.MultiTaskMLP).
+\section{Method}\label{sec:method}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  font=\footnotesize, >=latex, node distance=3mm and 4mm,
+  box/.style={draw=black!60, rounded corners=2pt, align=center, inner sep=3pt,
+              minimum height=7mm, fill=white},
+  input/.style={box, minimum width=17mm},
+  hybrid/.style={box, minimum width=17mm, fill=blue!8, draw=blue!60!black},
+  layer/.style={box, minimum width=9mm, minimum height=22mm, fill=black!5},
+  head/.style={box, minimum width=15mm}]
+\node[input] (rssi) {Scaled RSSI\\(464)};
+\node[input, below=of rssi] (heard) {Heard\\indicators (464)};
+\node[hybrid, below=of heard] (phase1) {Phase~1 features\\(3 + 8)};
+\node[layer, right=6mm of heard] (h1) {512};
+\node[layer, right=of h1] (h2) {256};
+\node[layer, right=of h2] (h3) {128};
+\node[head, right=6mm of h3] (floor) {Floor\\(5 classes)};
+\node[head, above=of floor] (building) {Building\\(3 classes)};
+\node[head, below=of floor] (position) {Position\\$(x, y)$};
+\foreach \n in {rssi, heard, phase1} \draw[->] (\n.east) -- (h1.west);
+\draw[->] (h1) -- (h2);
+\draw[->] (h2) -- (h3);
+\foreach \n in {building, floor, position} \draw[->] (h3.east) -- (\n.west);
+\node[above=1mm of h2, align=center] {Shared trunk\\(ReLU, dropout)};
+\node[above=1mm of building, align=center] {Heads};
+\end{tikzpicture}
+\caption{Our hybrid multi-task network. The shared trunk turns a scan's input
+columns into 128 numbers that all three heads read. The blue block is the
+hybrid part: the Phase~1 features (3 signal statistics and 8 AP-affinity
+columns).}
+\label{fig:network}
+\end{figure}
+
+\subsection{The Multi-Task Network}\label{sec:network}
+Our network is a multilayer perceptron (MLP) with hard parameter
+sharing~\cite{caruana1997multitask,ruder2017overview}: three fully connected
+hidden layers (512, 256 and 128 units) are shared by all tasks, and three small
+output layers, the \emph{heads}, read the last one (Fig.~\ref{fig:network}).
+The widths are not tuned, because every setting costs a five-fold CV of 200
+epochs; we use a funnel that halves the width at each layer, of the size used by
+other networks on this dataset (shared layers of 512--512
+in~\cite{laska2022multitask}, 1024--512--256 in~\cite{li2026hybrid}). A hidden
+layer computes
+\begin{equation}
+  \mathbf{h}_{l}=\operatorname{ReLU}(W_{l}\,\mathbf{h}_{l-1}+\mathbf{b}_{l}),
+  \qquad \operatorname{ReLU}(a)=\max(0,a),
+  \label{eq:layer}
+\end{equation}
+with weights $W_l$ and biases $\mathbf{b}_l$; $\mathbf{h}_0$ is the input
+vector. The building and floor heads give one score $z_c$ per class, and the
+softmax $p_c=e^{z_c}/\sum_k e^{z_k}$ turns the scores into probabilities; the
+prediction is the class with the highest one. The position head gives the two
+standardized coordinates.
+
+\subsection{Loss}\label{sec:loss}
+For a mini-batch of $N$ scans, the building head uses the cross-entropy
+$L_B=-\frac1N\sum_i\log p_{i,y_i}$, the mean of $-\log$ of the probability
+given to the true class, the floor head the same loss $L_F$ for floors, and the
+position head the mean squared error of the
+standardized coordinates, $L_P=\frac1{2N}\sum_i\lVert\hat{\mathbf{u}}_i-
+\mathbf{u}_i\rVert^2$. Because $x$ and $y$ are standardized with their own
+training standard deviations (124.5 and 67.4~m), $L_P$ counts a 1~m error in $y$
+about 3.4 times as much as a 1~m error in $x$, while the 2D error counts both
+equally. The network minimizes one weighted sum,
+\begin{equation}
+  L = L_B + L_F + \lambda\,L_P .
+  \label{eq:loss}
+\end{equation}
+Because the trunk is shared, its gradient is the sum of the three tasks'
+gradients, $\nabla_{\theta}L=\nabla_{\theta}L_B+\nabla_{\theta}L_F+
+\lambda\nabla_{\theta}L_P$: every task shapes the shared representation,
+which is how multi-task learning shares information between
+tasks~\cite{caruana1997multitask}. The weight $\lambda$ balances the tasks; a
+position error of 10~m is only about 0.1 in standardized units, so with
+$\lambda=1$ the classification losses would dominate. Results are known to be
+sensitive to these weights~\cite{kendall2018multi}, so $\lambda$ is tuned.
+
+\subsection{Training and Regularization}\label{sec:training}
+We implement the networks in PyTorch~\cite{paszke2019pytorch} and train them
+with AdamW~\cite{kingma2015adam,loshchilov2019decoupled}, mini-batches
+of 256 scans and a learning rate of $10^{-3}$ that falls to 0 along a cosine
+curve over 200 epochs (passes over the training scans), so that the last
+steps are small. Three things stop the network from memorizing the
+training scans: \emph{dropout}~\cite{srivastava2014dropout} sets each hidden
+unit to 0 with probability $p=0.2$ during training (only then),
+\emph{weight decay} (0.01, the default of PyTorch's AdamW) shrinks every
+weight a little at each step, separately from the Adam step as AdamW
+proposes~\cite{loshchilov2019decoupled}: PyTorch computes
+$\theta\leftarrow\theta-\eta\,(0.01\,\theta+\ldots)$ with the current learning
+rate $\eta$; and \emph{hidden WAPs}: in every batch, each heard WAP of a scan is
+hidden with probability 0.1 (its scaled RSSI and indicator are set to 0; the 11
+Phase~1 columns are left as they are). A new phone, or the same phone on another
+day, misses some WAPs, so the network should not depend on any single one. This
+is a form of input dropout~\cite{srivastava2014dropout}, but without dropout's
+rescaling: a hidden WAP looks exactly like a WAP that is not heard.
+
+\subsection{Two Hybrids of Phase~1 and Phase~2}\label{sec:hybrid}
+The raw RSSI columns say how strongly each WAP is heard, but not where the WAP
+is; a network must learn that from the training scans by itself. Our hybrid
+network also receives the Phase~1 features (Section~\ref{sec:inputs}): the
+AP-affinity columns are a location hint (likely building, floor and position)
+computed from where each WAP is heard in the training scans. This is
+classical, hand-made feature engineering feeding a deep network. Wide-and-deep
+models~\cite{cheng2016wide} also join hand-made features with a deep network,
+but through a separate linear part added at the output; ours are plain extra
+inputs of the shared trunk. The AP-affinity profiles are
+learned again in every fold, so the hint never uses held-out labels.
+
+The second hybrid combines the models at the output. The Phase~1 Random
+Forest and the hybrid MLP each give class probabilities for building and
+floor and a position; the \emph{blend} averages them,
+\begin{equation}
+  \hat{\mathbf{q}}=w\,\mathbf{q}_{\mathrm{RF}}+(1-w)\,\mathbf{q}_{\mathrm{NN}},
+  \label{eq:blend}
+\end{equation}
+with one forest weight $w\in\{0,0.1,\dots,1\}$ per task ($w=0$: the network
+alone, $w=1$: the forest alone) and the most probable class for building and
+floor. The weights are chosen by user-group CV: in every fold both models are
+trained on the other folds and predict the held-out scans, and each task keeps
+the weight with the best CV score, as each task kept its own setting in
+Phase~1 (on a tie, the smaller weight). The network's out-of-fold outputs use
+the ablation seed (Section~\ref{sec:tuning}), not the runs that won the tuning,
+so the network alone ($w=0$) is the ablation's full network. Trees and networks
+are biased towards different kinds of functions~\cite{grinsztajn2022tree}, in
+Phase~1 no model was best at every task, and on tabular data an ensemble of
+networks and XGBoost beat XGBoost alone~\cite{shwartzziv2022tabular}, so an
+average can beat both models.
+
+\subsection{Tuning, Final Network and Ablation}\label{sec:tuning}
+We tune the one setting that only a multi-task network has, the position
+weight $\lambda\in\{30,100,300\}$, because multi-task results depend on the task
+weights~\cite{kendall2018multi}; the other settings are fixed in advance
+(Section~\ref{sec:training}). Every value is scored on the same five user-group
+folds as Phase~1, and the one with the lowest CV mean 2D error is kept. Before using the test set we fixed the final network: the \emph{hybrid
+MLP} of Fig.~\ref{fig:network}, the shared design of the brief. Two other
+networks are tested next to it with the same settings: the \emph{MLP}
+(multi-task, Wi-Fi inputs only) and \emph{hybrid single-task MLPs} (three
+separate networks, one per task, with the hybrid inputs). The ablation study removes one part of the
+hybrid MLP at a time (multi-task sharing, Phase~1 features, heard indicators,
+hidden WAPs, dropout and weight decay) and scores each variant with the same
+folds and settings. All ablation networks use a new random seed, so that the
+full network is not the very run that won the tuning (which would favor it).
+Each fold has a different difficulty, so we also count in how many of the five
+folds a variant is worse. To see how much a CV score depends on chance, we
+cross-validate the full network with two more seeds (a seed sets the starting
+weights, the dropout masks, the order of the batches and the hidden WAPs). Finally, we train the final network on all
+training scans with five seeds and test each, to see the spread of the test
+score.
+
+\subsection{Metrics}\label{sec:metrics}
+We use exactly the Phase~1 metrics and code: building and floor accuracy, the
+mean absolute error (MAE) of $x$ and $y$, the mean and median 2D error
+(straight-line distance between predicted and true position), the error
+breakdown into three cases (building wrong; building right but floor wrong;
+both right), floor confusion matrices, error maps (in notebook~05) and the
+split into test scans from phones seen in training and from new phones.

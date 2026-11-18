@@ -1,0 +1,53 @@
+% Section III: Data and Network Inputs -- the same data, cleaning and split as
+% Phase 1, and how a scan becomes the network's input columns and targets.
+% Numbers: results/metrics/eda_summary.json and cleaning.csv (Phase 1);
+% r_min = -105 dBm and the 464 kept WAPs come from indoorloc.dl.NetworkInputs
+% fitted on the cleaned training data (notebook 04, section 1).
+\section{Data and Network Inputs}\label{sec:inputs}
+
+\emph{Data and split.} We keep the data and the protocol of Phase~1, so that
+the two phases are compared fairly. UJIIndoorLoc~\cite{torres2014ujiindoorloc}
+has 19,937 training scans and 1,111 test scans (the UCI validation file,
+recorded about three months later; 9 of its 11 phones are not in the training
+data). Each scan has the RSSI of 520 WAPs, and the code for ``not heard''
+($+100$) becomes $-110$~dBm, weaker than any real reading. The same three rules
+clean the training file only (no WAP heard, exact duplicates, a reading of
+$-30$~dBm or stronger), which leaves 18,719 scans. The settings we tune (the
+position weight and the blend weights) are chosen with the same five user-group
+folds as in Phase~1, which hold out whole users with their
+phones~\cite{roberts2017crossvalidation}; the other settings are fixed in
+advance, and the test set is used only at the end.
+
+\emph{Input columns.} A neural network trains well only when its inputs have
+similar, small ranges, so we turn every scan into three blocks of columns
+(Fig.~\ref{fig:network}):
+\begin{itemize}
+\item \emph{Scaled RSSI} of the 464 WAPs heard in training:
+  \begin{equation}
+    s_j=\frac{r_j-r_{\min}}{-r_{\min}}\in[0,1]
+    \label{eq:scale}
+  \end{equation}
+  for a heard WAP~$j$, and $s_j=0$ if it is not heard; $r_j$ is the reading in
+  dBm and $r_{\min}=-105$~dBm, 1~dB below the weakest training reading. So $-40$~dBm becomes 0.62 and $-100$~dBm 0.05. A
+  test reading weaker than $r_{\min}$ becomes 0.
+\item \emph{Heard indicators} (missingness indicators): $m_j=1$ if WAP~$j$ is
+  heard, else 0. They tell the network which WAPs are missing, so ``not
+  heard'' cannot be mixed up with ``heard very weakly''.
+\item \emph{Phase~1 features} (hybrid network only): the 3 signal statistics
+  (WAPs heard, strongest and mean reading) and the 8 AP-affinity columns of
+  Phase~1, each standardized, $z=(v-\mu)/\sigma$, with the mean $\mu$ and
+  standard deviation $\sigma$ of the training scans.
+\end{itemize}
+This gives $464+464+11=939$ input columns for the hybrid network and 928 for
+the network without Phase~1 features.
+
+\emph{Targets.} Building (3 classes) and floor (5 classes, 0--4) are class
+numbers. The two coordinates are standardized in the same way, with the
+training mean and standard deviation, so that the network predicts numbers
+near 0; its predictions are turned back into meters before they are scored.
+
+\emph{No leakage.} Everything learned from data (the kept WAPs, $r_{\min}$, the
+AP-affinity profiles and every mean and standard deviation) is learned again
+from the training part of each fold, and from all training scans for the final
+model. Held-out and test scans are only transformed with these numbers; they
+are never scaled on their own.

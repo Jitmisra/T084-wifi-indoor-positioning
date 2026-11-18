@@ -1,0 +1,45 @@
+% Section I: Introduction -- Phase 1 in one paragraph, the gap, what the brief
+% asks for in Phase 2, and our three contributions. Phase 1 numbers:
+% results/metrics/test_results.csv (Random Forest 7.42 m, XGBoost 95.2% floor)
+% and feature_check.csv (AP-affinity 15.87 -> 11.38 m, user-group CV).
+\section{Introduction}\label{sec:intro}
+
+A phone hears the Wi-Fi access points (WAPs) around it with different signal
+strengths (RSSI, in dBm), and this list of readings, one \emph{scan}, works
+like a fingerprint of the place where it was taken~\cite{he2016wifi}. On the
+public UJIIndoorLoc dataset~\cite{torres2014ujiindoorloc} we predict three
+things for every scan: its building and floor (classification) and its
+position (regression, in meters).
+
+In Phase~1 we solved the three tasks with classical machine learning: every
+method used three separate models. The best, a Random Forest with our own
+AP-affinity features, reached a mean 2D error of 7.42~m on the test set, while
+XGBoost found the most floors (95.2\%). AP-affinity, which learns where each
+WAP is usually heard, gave our largest gain (cross-validated error from 15.87
+to 11.38~m). But the three task models share nothing, although building, floor
+and position describe one place. Multi-task learning~\cite{caruana1997multitask}
+trains related tasks together, so that what one task learns can help the
+others.
+
+Phase~2 builds the network the project brief asks for: one multilayer
+perceptron (MLP) whose shared hidden layers feed three heads, two for
+classification (building, floor) and one for regression (position). We keep the
+protocol of Phase~1 unchanged: the same cleaned training data, every tuned
+setting chosen by 5-fold user-group cross-validation (CV), which holds out whole
+users and their phones, and the same test set, used only at the end. Our
+contributions are:
+\begin{itemize}
+\item \emph{Two hybrids of Phase~1 and Phase~2.} Besides the scaled readings
+  and heard (missingness) indicators of the WAPs, the network receives our
+  Phase~1 features, the signal statistics and AP-affinity, as a ready-made
+  location hint; and a blend averages the class probabilities and positions of
+  the network and of the Phase~1 Random Forest, with one weight per task chosen
+  by user-group CV.
+\item \emph{An ablation study} that removes one part at a time (the shared
+  trunk, the Phase~1 features, the heard indicators, the hidden WAPs, dropout
+  and weight decay), with the CV noise of the random seed measured.
+\item \emph{A fair comparison} of the network with our Phase~1 models and
+  with single-task networks, on the same folds, test scans and metrics,
+  including a hierarchical error breakdown, floor confusion matrices, error
+  maps (in notebook~05) and a split into seen and new phones.
+\end{itemize}

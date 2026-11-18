@@ -1,5 +1,7 @@
 % =============================================================================
-% references.bib -- the works cited in the Phase 1 report of Team T084.
+% references.bib -- the works cited in the Phase 1 report (main.tex) and the
+% Phase 2 report (main_phase2.tex) of Team T084. BibTeX keeps only the works a
+% report cites, so each report lists only its own references.
 %
 % Every entry was checked against the record its DOI resolves to (Crossref or
 % DataCite) or, without a publisher DOI, against jmlr.org. Capitalization that
@@ -215,4 +217,228 @@
   pages   = {913--929},
   year    = {2017},
   doi     = {10.1111/ecog.02881}
+}
+
+
+% =============================================================================
+% Phase 2. Every entry below was checked against the publisher record (Crossref,
+% IEEE, ACM, JMLR, NeurIPS, MDPI) or, for preprints, the arXiv record; quotes
+% and numbers used in the report: docs/literature_matrix_phase2.csv.
+% =============================================================================
+
+% -----------------------------------------------------------------------------
+% Deep networks for Wi-Fi fingerprinting
+% -----------------------------------------------------------------------------
+
+@inproceedings{kim2018simo,
+  author    = {Kim, Kyeong Soo},
+  title     = {Hybrid Building/Floor Classification and Location Coordinates Regression Using a Single-Input and Multi-Output Deep Neural Network for Large-Scale Indoor Localization Based on {Wi-Fi} Fingerprinting},
+  booktitle = {2018 Sixth International Symposium on Computing and Networking Workshops ({CANDARW})},
+  pages     = {196--201},
+  address   = {Takayama, Japan},
+  publisher = {IEEE},
+  year      = {2018},
+  doi       = {10.1109/CANDARW.2018.00045}
+}
+
+@article{laska2022multitask,
+  author  = {Laska, Marius and Blankenbach, J{\"o}rg},
+  title   = {Multi-Task Neural Network for Position Estimation in Large-Scale Indoor Environments},
+  journal = {IEEE Access},
+  volume  = {10},
+  pages   = {26024--26032},
+  year    = {2022},
+  doi     = {10.1109/ACCESS.2022.3156579}
+}
+
+@inproceedings{elesawi2021hierarchical,
+  author    = {Ahmed Elesawi, Abdalla Elmokhtar and Kim, Kyeong Soo},
+  title     = {Hierarchical Multi-Building and Multi-Floor Indoor Localization Based on Recurrent Neural Networks},
+  booktitle = {2021 Ninth International Symposium on Computing and Networking Workshops ({CANDARW})},
+  pages     = {193--196},
+  address   = {Matsue, Japan},
+  publisher = {IEEE},
+  year      = {2021},
+  doi       = {10.1109/CANDARW53999.2021.00038}
+}
+
+@article{li2025hierarchical,
+  author  = {Li, Sihao and Kim, Kyeong Soo and Tang, Zhe and Smith, Jeremy S.},
+  title   = {Hierarchical Stagewise Training of Linked Deep Neural Networks for Multibuilding and Multifloor Indoor Localization Based on {Wi-Fi} {RSSI} Fingerprinting},
+  journal = {IEEE Sensors Journal},
+  volume  = {25},
+  number  = {13},
+  pages   = {23341--23351},
+  year    = {2025},
+  doi     = {10.1109/JSEN.2024.3455554}
+}
+
+@article{kargarbarzi2024edge,
+  author  = {Kargar-Barzi, Amin and Farahmand, Ebrahim and Taheri Chatrudi, Nooshin and Mahani, Ali and Shafique, Muhammad},
+  title   = {An Edge-Based {WiFi} Fingerprinting Indoor Localization Using Convolutional Neural Network and Convolutional Auto-Encoder},
+  journal = {IEEE Access},
+  volume  = {12},
+  pages   = {85050--85060},
+  year    = {2024},
+  doi     = {10.1109/ACCESS.2024.3412676}
+}
+
+@article{li2026hybrid,
+  author  = {Li, Yujie and Kim, Sang-Chul},
+  title   = {Hybrid Blended {WiFi} Fingerprint Indoor Localization Using Multi-Task Learning and Feature-Space {WKNN}},
+  journal = {Applied Sciences},
+  volume  = {16},
+  number  = {9},
+  note    = {{A}rt. no. 4184},
+  year    = {2026},
+  doi     = {10.3390/app16094184}
+}
+
+@article{park2024wknn,
+  author  = {Park, Jae-Hyeon and Kim, Dongdeok and Suh, Young-Joo},
+  title   = {{WKNN}-Based {Wi-Fi} Fingerprinting with Deep Distance Metric Learning via {Siamese} Triplet Network for Indoor Positioning},
+  journal = {Electronics},
+  volume  = {13},
+  number  = {22},
+  note    = {{A}rt. no. 4448},
+  year    = {2024},
+  doi     = {10.3390/electronics13224448}
+}
+
+@article{alhomayani2020deep,
+  author  = {Alhomayani, Fahad and Mahoor, Mohammad H.},
+  title   = {Deep Learning Methods for Fingerprint-Based Indoor Positioning: A Review},
+  journal = {Journal of Location Based Services},
+  volume  = {14},
+  number  = {3},
+  pages   = {129--200},
+  year    = {2020},
+  doi     = {10.1080/17489725.2020.1817582}
+}
+
+@misc{eftekharizadeh2026physics,
+  author       = {Eftekharizadeh, Arshia and Nasiri, Rezvan and Moradi, Hadi},
+  title        = {Interpretable Physics Informed {WiFi} Indoor Localization: Learning an Effective Access Point Geometry and Using It to Prune},
+  howpublished = {arXiv preprint arXiv:2609.32539},
+  year         = {2026},
+  doi          = {10.48550/arXiv.2609.32539}
+}
+
+% -----------------------------------------------------------------------------
+% Multi-task learning, training and regularization of neural networks
+% -----------------------------------------------------------------------------
+
+@misc{ruder2017overview,
+  author       = {Ruder, Sebastian},
+  title        = {An Overview of Multi-Task Learning in Deep Neural Networks},
+  howpublished = {arXiv preprint arXiv:1706.05098},
+  year         = {2017},
+  doi          = {10.48550/arXiv.1706.05098}
+}
+
+@inproceedings{kendall2018multi,
+  author    = {Kendall, Alex and Gal, Yarin and Cipolla, Roberto},
+  title     = {Multi-Task Learning Using Uncertainty to Weigh Losses for Scene Geometry and Semantics},
+  booktitle = {Proceedings of the {IEEE/CVF} Conference on Computer Vision and Pattern Recognition ({CVPR})},
+  pages     = {7482--7491},
+  address   = {Salt Lake City, UT, USA},
+  publisher = {IEEE},
+  year      = {2018},
+  doi       = {10.1109/CVPR.2018.00781}
+}
+
+@book{goodfellow2016deep,
+  author    = {Goodfellow, Ian and Bengio, Yoshua and Courville, Aaron},
+  title     = {Deep Learning},
+  publisher = {MIT Press},
+  address   = {Cambridge, MA, USA},
+  year      = {2016}
+}
+
+@inproceedings{nair2010rectified,
+  author    = {Nair, Vinod and Hinton, Geoffrey E.},
+  title     = {Rectified Linear Units Improve Restricted {Boltzmann} Machines},
+  booktitle = {Proceedings of the 27th International Conference on Machine Learning ({ICML})},
+  pages     = {807--814},
+  address   = {Haifa, Israel},
+  publisher = {Omnipress},
+  year      = {2010}
+}
+
+@article{srivastava2014dropout,
+  author  = {Srivastava, Nitish and Hinton, Geoffrey and Krizhevsky, Alex and Sutskever, Ilya and Salakhutdinov, Ruslan},
+  title   = {Dropout: A Simple Way to Prevent Neural Networks from Overfitting},
+  journal = {Journal of Machine Learning Research},
+  volume  = {15},
+  number  = {56},
+  pages   = {1929--1958},
+  year    = {2014},
+  url     = {https://jmlr.org/papers/v15/srivastava14a.html}
+}
+
+@inproceedings{kingma2015adam,
+  author    = {Kingma, Diederik P. and Ba, Jimmy},
+  title     = {{Adam}: A Method for Stochastic Optimization},
+  booktitle = {3rd International Conference on Learning Representations ({ICLR})},
+  address   = {San Diego, CA, USA},
+  year      = {2015},
+  doi       = {10.48550/arXiv.1412.6980}
+}
+
+@inproceedings{loshchilov2019decoupled,
+  author    = {Loshchilov, Ilya and Hutter, Frank},
+  title     = {Decoupled Weight Decay Regularization},
+  booktitle = {7th International Conference on Learning Representations ({ICLR})},
+  address   = {New Orleans, LA, USA},
+  year      = {2019},
+  doi       = {10.48550/arXiv.1711.05101}
+}
+
+% -----------------------------------------------------------------------------
+% Trees and neural networks on tabular data, and hand-made features in networks
+% -----------------------------------------------------------------------------
+
+@inproceedings{grinsztajn2022tree,
+  author    = {Grinsztajn, L{\'e}o and Oyallon, Edouard and Varoquaux, Ga{\"e}l},
+  title     = {Why Do Tree-Based Models Still Outperform Deep Learning on Typical Tabular Data?},
+  booktitle = {Advances in Neural Information Processing Systems 35 ({NeurIPS} 2022), Datasets and Benchmarks Track},
+  pages     = {507--520},
+  publisher = {Curran Associates, Inc.},
+  year      = {2022},
+  doi       = {10.52202/068431-0037}
+}
+
+@article{shwartzziv2022tabular,
+  author  = {Shwartz-Ziv, Ravid and Armon, Amitai},
+  title   = {Tabular Data: Deep Learning Is Not All You Need},
+  journal = {Information Fusion},
+  volume  = {81},
+  pages   = {84--90},
+  year    = {2022},
+  doi     = {10.1016/j.inffus.2021.11.011}
+}
+
+@inproceedings{cheng2016wide,
+  author    = {Cheng, Heng-Tze and Koc, Levent and Harmsen, Jeremiah and Shaked, Tal and Chandra, Tushar and Aradhye, Hrishi and Anderson, Glen and Corrado, Greg and Chai, Wei and Ispir, Mustafa and Anil, Rohan and Haque, Zakaria and Hong, Lichan and Jain, Vihan and Liu, Xiaobing and Shah, Hemal},
+  title     = {{Wide \& Deep} Learning for Recommender Systems},
+  booktitle = {Proceedings of the 1st Workshop on Deep Learning for Recommender Systems ({DLRS} 2016)},
+  pages     = {7--10},
+  address   = {Boston, MA, USA},
+  publisher = {ACM},
+  year      = {2016},
+  doi       = {10.1145/2988450.2988454}
+}
+
+% -----------------------------------------------------------------------------
+% Software
+% -----------------------------------------------------------------------------
+
+@inproceedings{paszke2019pytorch,
+  author    = {Paszke, Adam and Gross, Sam and Massa, Francisco and Lerer, Adam and Bradbury, James and Chanan, Gregory and Killeen, Trevor and Lin, Zeming and Gimelshein, Natalia and Antiga, Luca and Desmaison, Alban and Kopf, Andreas and Yang, Edward and DeVito, Zachary and Raison, Martin and Tejani, Alykhan and Chilamkurthy, Sasank and Steiner, Benoit and Fang, Lu and Bai, Junjie and Chintala, Soumith},
+  title     = {{PyTorch}: An Imperative Style, High-Performance Deep Learning Library},
+  booktitle = {Advances in Neural Information Processing Systems 32 ({NeurIPS} 2019)},
+  volume    = {32},
+  publisher = {Curran Associates, Inc.},
+  year      = {2019},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2019/hash/bdbca288fee7f92f2bfa9f7012727740-Abstract.html}
 }

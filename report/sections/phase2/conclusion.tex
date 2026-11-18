@@ -1,0 +1,35 @@
+% Section VI: Discussion and Conclusion. Numbers repeated from Section V
+% (results/phase2/metrics/, results/phase2/tuning/ and results/metrics/).
+\section{Discussion and Conclusion}\label{sec:conclusion}
+
+\emph{What worked.} One shared network learns all three tasks with a third
+of the weights of three separate networks. Its regularization matters:
+without dropout and weight decay the CV error rises by 1.08~m, and the heard
+indicators help position too (0.58~m); the effect of hidden WAPs (0.16~m) is at
+the level of chance. The result hardly depends on the seed (test:
+$8.21\pm0.06$~m over five seeds). The second hybrid, the blend with the
+Random Forest, beat both models in CV (9.14~m) and improved the network on
+the test set (8.10~m, 92.2\% of floors).
+
+\emph{What did not.} Three findings go against our expectations, and we report
+them as they are. First, the Phase~1 features did not help the network (a
+change of 0.04~m, within chance); a likely reason, which we did not test, is
+that with 18,719 training scans it learns from the readings alone where the
+WAPs are. Second, sharing one trunk did not help accuracy: three single-task
+networks were better in CV and on the test set (8.03 against 8.32~m, 94.1\%
+against 90.8\% of floors). For position, a single-task network also beat a
+SIMO-style shared network on this dataset, although a multi-task grid-cell
+model beat both~\cite{laska2022multitask}. Third, user-group CV ranked the
+network ahead of the Random Forest, but on the test set the forest was better
+(7.42 against 8.32~m): CV with 16 user groups is a strict but noisy guide, and
+its ranking of very different models need not hold on a test set recorded
+months later.
+
+\emph{Conclusion.} Phase~2 built the multi-task network of the brief on the
+same data, folds, test set and metrics as Phase~1, with an ablation study and
+seed checks. The hybrid MLP reached 99.9\% building accuracy, 90.8\% floor
+accuracy and a mean 2D error of 8.32~m on the test set; its blend with the
+Phase~1 Random Forest reached 8.10~m and 92.2\%, while the forest alone remains
+the best on position (7.42~m). Learned
+task weights~\cite{kendall2018multi} and inputs that are more robust to new
+phones are the next steps.
