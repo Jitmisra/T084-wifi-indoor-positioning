@@ -19,6 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))  # no insta
 from indoorloc.config import DATA_URL, RAW_DIR, SHA256  # noqa: E402
 
 
+
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
